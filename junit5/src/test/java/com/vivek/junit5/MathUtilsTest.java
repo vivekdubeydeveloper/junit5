@@ -10,8 +10,12 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.RepetitionInfo;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestReporter;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
@@ -20,6 +24,9 @@ import org.junit.runner.RunWith;
 public class MathUtilsTest {
 
 	MathUtils mu;
+	TestInfo ti;
+	TestReporter tr;
+	
 
 	@BeforeAll
 	public static void beforeInstance() {
@@ -28,17 +35,23 @@ public class MathUtilsTest {
 
 	// This method will run before each test cases
 	@BeforeEach
-	public void init() {
+	public void init(TestInfo ti,TestReporter tr) {
 		/*
 		 * do not initialize object in each fuction do it in init method
 		 */
 		System.out.println("Run before each testcase");
+		this.ti=ti;
+		this.tr=tr;
+		tr.publishEntry("This is "+ti.getTestMethod());
 		mu = new MathUtils();
 	}
 
 	@Test
 	// @Order(2)
+	@DisplayName("Sum Test Function")
 	public void sumTest() {
+		
+		System.out.println("This is "+ti.getDisplayName());
 		// MathUtils mu = new MathUtils();
 		int x = 3, y = 4, expected = 7;
 		System.out.println("Sum test");
@@ -48,7 +61,14 @@ public class MathUtilsTest {
 	//@Test
 	// @Order(1)
 	@RepeatedTest(4)
-	public void calCircleArea() {
+	@Tag("Circle")
+	public void calCircleArea(RepetitionInfo rinfo) {
+		System.out.println(rinfo.getCurrentRepetition());
+		if(rinfo.getCurrentRepetition()==1) {
+			//perform logic1
+		}else if(rinfo.getCurrentRepetition()==2) {
+			//perform logic 2
+		}
 		// MathUtils mu = new MathUtils();
 		int radius = 10;
 		double expected = 314.1592653589793;
